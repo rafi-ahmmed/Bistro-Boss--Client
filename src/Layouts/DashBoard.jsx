@@ -145,15 +145,6 @@ const DashBoard = () => {
                                     Payment
                                  </NavLink>
                               </li>
-                              <li className="mt-2 lg:mt-3 uppercase">
-                                 <NavLink
-                                    to={'/dashboard/paymentHistory'}
-                                    className={activeLinkStyle}
-                                 >
-                                    <IoWalletSharp className="text-xl lg:text-xl" />{' '}
-                                    payment history
-                                 </NavLink>
-                              </li>
                            </>
                         ) : (
                            // Users Links
@@ -167,15 +158,7 @@ const DashBoard = () => {
                                     User Home
                                  </NavLink>
                               </li>
-                              <li className="mt-2 lg:mt-3 uppercase">
-                                 <NavLink
-                                    to={'/dashboard/payment'}
-                                    className={activeLinkStyle}
-                                 >
-                                    <FaCalendarDays className="text-xl lg:text-xl" />{' '}
-                                    reservation
-                                 </NavLink>
-                              </li>
+                              
                               <li className="mt-2 lg:mt-3 uppercase">
                                  <NavLink
                                     to={'/dashboard/paymentHistory'}

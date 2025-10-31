@@ -1,15 +1,45 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SectionTitle from '../../../Components/SectionTitle';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import useAuth from '../../../Hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import Spinner from '../../../Components/Spinner';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import { useWindowSize } from 'react-use';
+import Confetti from 'react-confetti';
+import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 const PaymentHistory = () => {
    const axiosSecure = useAxiosSecure();
+   const { width, height } = useWindowSize();
    const { user } = useAuth();
-
+   const [showConfetti, setShowConfetti] = useState(false);
+   const [searchParams] = useSearchParams();
+   useEffect(() => {
+      const status = searchParams.get('status');
+      if (status === 'success') {
+         Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: `Payment successful!`,
+            showConfirmButton: true, 
+            confirmButtonText: 'OK', 
+            confirmButtonColor: '#C48C3A', 
+            background: '#fff',
+            color: '#000',
+            iconColor: '#C48C3A',
+            customClass: {
+               popup: 'rounded-lg shadow-lg',
+               title: 'text-lg font-semibold',
+            },
+         });
+         setShowConfetti(true);
+      }
+   }, []);
+   console.log(showConfetti);
+   // Get payment data
    const {
       data: paymentData = [],
       isPending,
@@ -35,7 +65,7 @@ const PaymentHistory = () => {
             subHeading={'At a Glance!'}
             heading={'PAYMENT HISTORY'}
          />
-
+         {showConfetti && <Confetti width={width} height={height} />}
          <div className="max-w-5xl mx-auto px-3.5 lg:px-0">
             <p className="text-[#151515]  text-lg md:text-lg lg:text-2xl font-bold font-cinzel">
                Total Payments :{' '}
@@ -90,7 +120,7 @@ const PaymentHistory = () => {
                                        Food Order
                                     </td>
                                     <td className="text-[#737373] text-center text-sm ">
-                                       ${item.price}
+                                       ${item.totalPrice}
                                     </td>
                                     <td className="text-[#737373] text-center text-sm ">
                                        {new Date(item.data).toLocaleString()}

@@ -53,7 +53,6 @@ const TabMenu = ({ category }) => {
    const getCategoryData = async () => {
       const { data } = await axios.get(
          `${import.meta.env.VITE_URL}/menu/category/${value}?page=${currentPage - 1}&limit=6`
-         // `${import.meta.env.VITE_URL}/menu/category/${value}?page=${currentPage - 1}&limit=6`
       );
       setLodding(false);
       setCategoryMenu(data);

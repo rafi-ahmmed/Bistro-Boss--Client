@@ -1,21 +1,12 @@
-import {
-   CardCvcElement,
-   CardElement,
-   CardExpiryElement,
-   CardNumberElement,
-   useElements,
-   useStripe,
-} from '@stripe/react-stripe-js';
-
+import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import toast from 'react-hot-toast';
 import useCart from '../../../../Hooks/useCart';
 import { useEffect, useState } from 'react';
 import useAxiosSecure from '../../../../Hooks/useAxiosSecure';
 import useAuth from '../../../../Hooks/useAuth';
-import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
-const CheckoutForm = () => {
+const CheckoutFormStripe = () => {
    const stripe = useStripe();
    const elements = useElements();
    const axiosSecure = useAxiosSecure();
@@ -95,66 +86,48 @@ const CheckoutForm = () => {
          card.clear();
          // console.log(paymentIntent);
          if (paymentIntent.status == 'succeeded') {
-            Swal.fire({
-               position: 'center',
-               icon: 'success',
-               title: `Payment successful!`,
-               showConfirmButton: false,
-               timer: 1500,
-               background: '#fff', // alert box background
-               color: '#000', // text color (black for readability)
-               iconColor: '#C48C3A', // your sidebar golden-brown color
-               customClass: {
-                  popup: 'rounded-lg shadow-lg',
-                  title: 'text-lg font-semibold',
-               },
-            });
-
+            
             // Now payment details store in database
             const payment = {
                transactionId: paymentIntent.id,
                email: user.email,
-               price: price,
+               totalPrice: price,
                data: new Date(), // UTC date convert
                cartId: cart.map((item) => item._id),
                menuItemId: cart.map((item) => item.menuId),
-               status: 'pending',
+               status: 'success',
             };
 
             const { data } = await axiosSecure.post('/payments', payment);
-            // console.log('payment saved', data);
-            if (data?.deleteResult?.insertedId) {
-               Swal.fire({
-                  position: 'center',
-                  icon: 'success',
-                  title: `Payment successful!`,
-                  showConfirmButton: false,
-                  timer: 1500,
-                  background: '#fff', // alert box background
-                  color: '#000', // text color (black for readability)
-                  iconColor: '#C48C3A', // your sidebar golden-brown color
-                  customClass: {
-                     popup: 'rounded-lg shadow-lg',
-                     title: 'text-lg font-semibold',
-                  },
-               });
+            console.log('payment saved', data);
+            if (
+               data?.deleteResult?.deletedCount > 0 &&
+               data?.paymentResult?.insertedId
+            ) {
+               navigate('/dashboard/paymentHistory?status=success');
             }
             refetch();
-            navigate('/dashboard/paymentHistory');
          }
       }
    };
 
    return (
-      <div>
-         <form className="max-w-2xl mx-auto" onSubmit={handleSubmit}>
-            <div className="border border-[#E8E8E8] p-4 rounded-lg  mx-auto ">
+      <div className="max-w-2xl mx-auto border-2 border-slate-200 p-6 mt-10 bg-[#f9fafb] rounded-lg shadow-md">
+         <h2 className="text-2xl font-semibold text-center mb-5 text-gray-800">
+            STRIPE PAYMENT
+         </h2>
+
+         <form onSubmit={handleSubmit}>
+            <legend className="fieldset-legend">
+               Enter your card information
+            </legend>
+            <div className="border border-[#E8E8E8] p-4 rounded-lg mx-auto">
                <CardElement
                   options={{
                      style: {
                         base: {
                            fontSize: '16px',
-                           color: '#32325d',
+                           color: '#00000',
                            '::placeholder': {
                               color: '#a0aec0',
                            },
@@ -169,7 +142,7 @@ const CheckoutForm = () => {
             </div>
 
             <button
-               className="btn btn-wide bg-[#570DF8] text-white mt-3 block mx-auto"
+               className="btn btn-wide bg-[#635bff] text-white mt-3 block mx-auto"
                type="submit"
                disabled={!stripe || !clientSecret || loading}
             >
@@ -180,4 +153,4 @@ const CheckoutForm = () => {
    );
 };
 
-export default CheckoutForm;
+export default CheckoutFormStripe;
