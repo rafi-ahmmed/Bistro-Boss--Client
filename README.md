@@ -1,5 +1,9 @@
 # 🍽️ Bistro Boss Restaurant - MERN Stack Application
 
+<p align="left">
+  <img src="https://i.ibb.co.com/Dfkp45wZ/Screenshot-From-2026-07-20-03-44-39.png" alt="Screenshot" width="1250" />
+</p>
+
 ## 📝 Description
 
 **Bistro Boss Restaurant** is a full-featured **MERN Stack restaurant application** where users can browse delicious food items, add them to their cart, and complete secure payments using **Stripe** or **SSLCommerz**.
